@@ -1,0 +1,40 @@
+# Import necessary libraries
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report
+
+# Generate a sample dataset
+np.random.seed(42)
+n = 100  # number of samples
+x = np.concatenate([np.random.normal(1, 1, (n, 1)), np.random.normal(3, 1, (n, 1))])
+y = np.concatenate([np.zeros((n, 1)), np.ones((n, 1))])
+
+# Split the dataset into training set and test set
+x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
+
+# Initialize a Logistic Regression model
+log_reg = LogisticRegression()
+
+# Train the model
+log_reg.fit(x_train, y_train.ravel())
+
+# Predict the test data
+y_pred = log_reg.predict(x_test)
+
+# Print the classification report
+print(classification_report(y_test, y_pred))
+
+# Plot the decision boundary
+plt.figure(figsize=(10, 6))
+plt.scatter(x[y==0], y[y==0], color='b', label='Class 0') 
+plt.scatter(x[y==1], y[y==1], color='r', label='Class 1') 
+X_test = np.linspace(-5, 10, 300)
+loss = log_reg.predict_proba(X_test.reshape(-1, 1))[:, 1]
+plt.plot(X_test, loss, color='green', linewidth=3, label='Decision Boundary')
+plt.title('Logistic Regression Decision Boundary')
+plt.xlabel('Feature Value')
+plt.ylabel('Class Probability')
+plt.legend()
+plt.show()
